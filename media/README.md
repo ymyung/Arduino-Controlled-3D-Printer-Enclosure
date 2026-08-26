@@ -1,3 +1,5 @@
+
+
 # Arduino-Controlled 3D Printer Enclosure
 
 An Arduino-based temperature-control system developed for a 3D printer enclosure. The system measures enclosure temperature using an LM35 sensor and automatically controls two ventilation fans through a MOSFET using PWM.
@@ -6,7 +8,7 @@ A potentiometer allows the user to select a desired temperature between approxim
 
 ## Physical Prototype
 
-![Arduino-Controlled 3D Printer Enclosure](media/prototype_photo.HEIC)
+![Arduino-Controlled 3D Printer Enclosure]<img width="4032" height="2268" alt="enclosure_photo" src="https://github.com/user-attachments/assets/a48dc317-c163-46c9-83ad-6458d7b99006" />
 
 ## Demo
 
