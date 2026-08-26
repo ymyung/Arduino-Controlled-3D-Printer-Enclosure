@@ -6,7 +6,7 @@ A potentiometer allows the user to select a desired temperature between approxim
 
 ## Physical Prototype
 
-![Arduino-Controlled 3D Printer Enclosure](media/prototype_overview.jpg)
+![Arduino-Controlled 3D Printer Enclosure](media/prototype_overview.HEIC)
 
 ## Demo
 
