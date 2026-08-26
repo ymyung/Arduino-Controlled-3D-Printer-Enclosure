@@ -4,13 +4,13 @@ This folder contains retained visual evidence from the Arduino-Controlled 3D Pri
 
 ## Files
 
-### `prototype_overview.jpg`
+### `prototype_overview.HEIC`
 
 Photograph of the physical prototype and its assembled hardware.
 
 The image is also displayed in the main project README.
 
-### `enclosure_demo.mp4`
+### `enclosure_demo.MOV`
 
 Video demonstrating operation of the physical prototype.
 
