@@ -9,6 +9,9 @@ Thumbs.db
 *.bak
 *.swp
 
+# SolidWorks temporary lock files
+~$*
+
 # Arduino build output
 build/
 *.elf

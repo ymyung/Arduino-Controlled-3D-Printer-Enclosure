@@ -1,159 +1,190 @@
 # Arduino-Controlled 3D Printer Enclosure
 
-Temperature-regulation system built around an Arduino Uno, **LM35 temperature sensing**, an adjustable temperature setpoint, **MOSFET-driven PWM fan control**, and a **16×2 I²C LCD**.
+This portfolio project combines an Arduino-based temperature-control prototype with a later SolidWorks electronics-packaging extension. It documents analog temperature sensing, PWM fan actuation, electrical integration, parametric enclosure design, assembly modelling, and engineering drawings while keeping the original group work separate from the independent CAD work.
 
-> **Project type:** Multidisciplinary engineering group project  
-> **Role:** Electrical Lead  
-> **Primary tools:** Arduino Uno, LM35, PWM, MOSFET switching, I²C, Tinkercad
+![Closed SolidWorks assembly of the Arduino control enclosure](docs/images/enclosure_closed.png)
 
-## Overview
+*Closed assembly showing the Arduino controller packaged within the electronics enclosure.*
 
-This project implemented an electronic cooling controller for a 3D printer enclosure. The controller measures enclosure temperature using an **LM35**, lets the user select a desired threshold with a **10 kΩ potentiometer**, and controls two cooling fans through an **n-channel MOSFET** using an Arduino PWM output.
+## Project Overview
 
-The system also provides live operating information on a **16×2 I²C LCD** and outputs diagnostic values to the Arduino serial monitor.
+### Phase 1 - Thermal-Control Prototype
 
-My contribution as **Electrical Lead** focused on the electrical-control subsystem: integrating the sensing and fan-control hardware, implementing the Arduino control logic, testing system behaviour, and documenting the circuit and firmware.
+**Original group project | January-April 2025**
+
+**My role: Electrical Lead**
+
+The group project developed a temperature-regulation system for a 3D-printer enclosure. My work covered the Arduino control system, analog temperature-sensor integration, MOSFET-switched PWM fan control, live monitoring, electrical subsystem integration, system testing, troubleshooting, and wiring/system documentation.
+
+The retained firmware and hardware documentation identify the sensor as an **LM35 analog temperature sensor**. It measures the main printer-enclosure temperature, and the cooling fans act on that main enclosure.
+
+### Phase 2 - Mechanical Control Enclosure
+
+**Independent mechanical design extension | 2026**
+
+I later revisited the project independently to design a dedicated electronics/control enclosure in SolidWorks. This work was not part of the January-April 2025 group deliverable. It extends the project through mechanical packaging, Arduino placement, connector access, external cable routing, a guided sliding lid, assembly configurations, and a three-drawing documentation package.
 
 ## System Architecture
 
 ```mermaid
 flowchart LR
-    LM35[LM35 Temperature Sensor] -->|A0| MCU[Arduino Uno]
-    POT[10 kΩ Potentiometer] -->|A1| MCU
-    MCU -->|I²C| LCD[16×2 LCD]
-    MCU -->|PWM D3| MOSFET[n-channel MOSFET]
-    MOSFET --> FANS[2 × DC Cooling Fans]
-    MCU -->|9600 baud| SERIAL[Serial Monitor]
+    subgraph MAIN[Main printer enclosure]
+        SENSOR[LM35 temperature sensor]
+        FANS[DC cooling fans]
+    end
+
+    subgraph BOX[Electronics/control enclosure]
+        MCU[Arduino Uno controller]
+        LOGIC[Threshold and PWM logic]
+        DRIVER[MOSFET fan driver]
+    end
+
+    SETPOINT[10 kOhm setpoint potentiometer] -->|A1| MCU
+    SENSOR -->|External sensor connection / A0| MCU
+    MCU --> LOGIC
+    LOGIC -->|PWM D3| DRIVER
+    DRIVER -->|External fan connection| FANS
+    MCU -->|I2C| LCD[16 x 2 status display]
 ```
 
-## How It Works
+The mechanical control enclosure houses the Arduino/control hardware. The temperature sensor and cooling fans remain associated with the main printer enclosure, with their wiring routed through external enclosure connections.
 
-1. The Arduino averages **20 LM35 ADC samples** to reduce short-term measurement noise.
-2. The LM35 voltage is converted to temperature in °C using its 10 mV/°C relationship.
-3. The potentiometer is averaged over **20 samples** and mapped to a **25–40 °C** user-selectable threshold.
-4. When measured temperature is at or below the threshold, the fans remain off.
-5. Above the threshold, the target PWM command increases with temperature and is constrained to **80–255**.
-6. A smoothing term makes the PWM command transition gradually toward the target instead of changing abruptly.
-7. The LCD displays measured temperature, selected threshold, and commanded fan percentage.
-8. The serial monitor outputs the same values for diagnostics during testing.
+## Mechanical Design
 
-The controller is a **threshold-based variable-speed controller**. It is not PID control and does not measure actual fan RPM.
+The independent SolidWorks work includes:
 
-## Electrical Design
+- a control-enclosure base with an approximately 120 mm x 85 mm x 35 mm overall envelope, approximately 2.5 mm walls, and R3 exterior corner treatment;
+- Arduino mounting bosses/standoffs and packaging space for an Uno R3-style controller model;
+- USB-B and power access plus routing for external sensor/fan wiring;
+- rail/groove guide geometry for a removable sliding lid;
+- an approximately 116 mm x 80.5 mm x 1.6 mm lid with a front pull feature and rear travel-limiting geometry;
+- OPEN and CLOSED assembly configurations controlled by configuration-specific mates; and
+- an exploded assembly representation for design communication.
 
-The physical prototype used:
+The lid is screwless and is not documented as a snap-fit. The included Arduino model is used as a packaging reference; its original source and license are not established in the repository, so no authorship claim is made for that model.
 
-- Arduino Uno R3
-- LM35 temperature sensor
-- 10 kΩ potentiometer
-- 16×2 I²C LCD
-- 2 × DC cooling fans
-- n-channel MOSFET
-- 100 Ω resistor
-- 10 kΩ resistor
-- 2 × diodes
-- breadboard and prototype wiring
+See [Mechanical Design Notes](docs/mechanical-design.md) for the CAD structure, interfaces, and current validation boundaries.
 
-The MOSFET provides the switching interface between the Arduino PWM signal and the fan load rather than driving the motors directly from an Arduino output pin.
+## CAD Assembly
 
-See the full [Bill of Materials](hardware/BOM.md).
+### Closed Configuration
 
-## Schematic
+![Closed assembly](docs/images/enclosure_closed.png)
+
+*Closed assembly showing the controller packaged within the electronics enclosure.*
+
+### Open Configuration
+
+![Open assembly](docs/images/enclosure_open.png)
+
+*Open configuration showing the guided sliding-lid mechanism and internal component access.*
+
+### Exploded Assembly
+
+![Exploded assembly](docs/images/enclosure_exploded.png)
+
+*Exploded representation showing the relationship between the enclosure base, Arduino controller, and removable lid.*
+
+## Component Design
+
+### Control Enclosure Base
+
+![Control enclosure base](docs/images/enclosure_base.png)
+
+*Base model incorporating controller mounting, connector access, external cable routing, and lid-guide geometry.*
+
+### Sliding Lid
+
+![Sliding lid](docs/images/enclosure_lid.png)
+
+*Removable lid designed around the enclosure rail/groove geometry, with a front pull feature.*
+
+## Engineering Drawings
+
+The native SolidWorks drawings are retained with the part and assembly files. PDF export remains a manual step in this repository.
+
+| Drawing | Description | PDF status |
+| --- | --- | --- |
+| ACE-001 | Arduino Control Enclosure Base | Manual export required |
+| ACE-002 | Arduino Control Enclosure Sliding Lid | Manual export required |
+| ACE-003 | Arduino Control Enclosure Assembly | Manual export required |
+
+Exact source and output filenames are listed in [`docs/drawings/README.md`](docs/drawings/README.md). No claim is made for GD&T, production tolerances, material specifications, surface finish, or production readiness.
+
+## Electrical & Control System
+
+The retained Arduino firmware implements a threshold-based variable-speed controller:
+
+- The LM35 signal on A0 and setpoint potentiometer on A1 are each averaged over 20 ADC samples.
+- The potentiometer maps to a 25-40 deg C threshold.
+- At or below the threshold, target fan PWM is zero.
+- Above the threshold, the target command increases over the next 10 deg C and is constrained to 80-255.
+- A 0.1 update factor moves the integer PWM command gradually toward its target.
+- PWM pin D3 drives the fan load through an n-channel MOSFET.
+- A 16 x 2 I2C LCD and 9600-baud serial output report temperature, setpoint, and commanded fan percentage.
+
+This is not PID control and it does not measure fan RPM. See the [firmware](firmware/fan_controller.ino) and [control-logic notes](docs/control_logic.md) for the implementation.
 
 ![Tinkercad schematic of the temperature-based fan-control circuit](hardware/tinkercad_schematic.png)
 
-> **LM35/TMP36 note:** The physical prototype used an **LM35**. Tinkercad did not provide an LM35 component, so a **TMP36 symbol is used only as a visual stand-in** in the retained schematic. The firmware uses the LM35 conversion relationship.
+*Retained circuit schematic. The TMP36 symbol is a visual stand-in for the LM35 documented in the physical prototype and firmware.*
 
-## Firmware
+## Testing and Retained Evidence
 
-The complete source is available at [`firmware/fan_controller.ino`](firmware/fan_controller.ino).
+The original electrical prototype was operated while readings and system behaviour were monitored for integration, testing, and troubleshooting. Retained evidence includes the source code, Tinkercad schematic, component documentation, a [prototype photo](media/enclosure_photo.HEIC), and a [working-system video](media/enclosure_demo.MOV.MOV).
 
-Key implementation details:
+This evidence is qualitative. The repository does not contain a retained calibration dataset, fan-RPM measurements, a controlled thermal-response dataset, or repeatability results; no numerical accuracy or closed-loop performance is claimed.
 
-| Function | Implementation |
-|---|---|
-| Temperature input | LM35 on A0 |
-| User setpoint | 10 kΩ potentiometer on A1 |
-| Fan command | PWM on D3 |
-| Display | 16×2 I²C LCD at `0x27` |
-| ADC averaging | 20 samples per analog input |
-| Setpoint range | 25–40 °C |
-| Active PWM range | 80–255 |
-| PWM smoothing | 0.1 update factor |
-| Diagnostics | Serial at 9600 baud |
+## Engineering Skills Demonstrated
 
-See [Control Logic](docs/control_logic.md) for a detailed explanation.
+**Mechanical:** SolidWorks, parametric part modelling, assembly modelling, mechanical packaging, engineering drawings, exploded assemblies, and component integration.
 
-## Testing and Evidence
+**Electrical / embedded:** Arduino programming, analog temperature sensing, ADC sampling, PWM control, MOSFET fan switching, LCD/serial monitoring, and hardware/software integration.
 
-The physical circuit was operated with the firmware while sensor values and thermal response were monitored to support troubleshooting and verify integrated fan-control behaviour.
-
-Retained evidence currently includes:
-
-- Arduino firmware;
-- Tinkercad electrical schematic;
-- component list / BOM;
-- a working-system video from the physical prototype.
-
-The video will be added under [`media/`](media/) when available in the repository.
-
-No quantitative calibration, fan-RPM, thermal-response, or repeatability dataset was retained, so this project does **not** claim numerical temperature accuracy or closed-loop performance.
-
-See [Testing and Limitations](docs/testing_and_limitations.md).
-
-## Design Decisions
-
-A few decisions that shaped the electrical-control system:
-
-- **MOSFET fan switching:** used to interface the Arduino PWM signal with the fan load rather than sourcing motor current directly from the microcontroller.
-- **Adjustable threshold:** the potentiometer lets the user choose a desired temperature between 25 °C and 40 °C.
-- **ADC averaging:** 20 samples are averaged for both analog inputs to reduce short-term fluctuation.
-- **Minimum active PWM:** once cooling is requested, the target command is constrained to at least 80/255 rather than commanding very low PWM values.
-- **Output smoothing:** the fan command approaches its target gradually to avoid abrupt changes in commanded speed.
-- **LCD + serial output:** local display supports normal operation while serial output supports debugging and testing.
-
-See [Design Decisions](docs/design_decisions.md) for additional detail.
+**Engineering practice:** electromechanical integration, prototype testing, troubleshooting, technical documentation, and iterative design.
 
 ## Repository Structure
 
 ```text
 arduino-3d-printer-enclosure/
-├── README.md
-├── firmware/
-│   └── fan_controller.ino
-├── hardware/
-│   ├── BOM.md
-│   ├── tinkercad_schematic.png
-│   └── tinkercad_component_list.png
-├── docs/
-│   ├── control_logic.md
-│   ├── design_decisions.md
-│   └── testing_and_limitations.md
-└── media/
-    └── README.md
+|-- README.md
+|-- firmware/
+|   `-- fan_controller.ino
+|-- hardware/
+|   |-- BOM.md
+|   |-- README.md
+|   |-- tinkercad_schematic.png
+|   |-- tinkercad_component_list.png
+|   `-- part files/
+|       |-- Control_Enclosure_Base.SLDPRT
+|       |-- Enclosure_lid.SLDPRT
+|       |-- enclosure_assembly.SLDASM
+|       |-- arduino uno.SLDPRT
+|       `-- ACE-001/002/003 native SolidWorks drawings
+|-- docs/
+|   |-- control_logic.md
+|   |-- design_decisions.md
+|   |-- testing_and_limitations.md
+|   |-- mechanical-design.md
+|   |-- drawings/
+|   |   `-- README.md
+|   `-- images/
+|       `-- five SolidWorks design views
+`-- media/
+    |-- enclosure_photo.HEIC
+    `-- enclosure_demo.MOV.MOV
 ```
 
-## Current Limitations
+Native CAD files remain in their original directory and retain their existing filenames to avoid disrupting assembly or drawing references.
 
-- PWM percentage represents the **commanded output**, not measured fan RPM.
-- The fans do not provide tachometer feedback.
-- No retained LM35 calibration dataset is available.
-- No retained quantitative temperature-response or repeatability dataset is available.
-- The temperature conversion assumes an approximately 5 V Arduino ADC reference.
-- The controller is threshold-based rather than PID or model-based.
-- The Tinkercad schematic uses a TMP36 symbol as a stand-in for the physical LM35.
+## Design Status / Future Work
 
-## Possible Future Improvements
+The repository contains the original controller firmware and qualitative prototype evidence, plus native CAD parts, an assembly, screenshots, and three native drawings for the independent mechanical extension. The control enclosure has not been documented here as physically fabricated or fit-validated.
 
-Potential extensions include:
+Remaining engineering work includes:
 
-- calibrating the LM35 against a reference thermometer;
-- logging temperature-versus-time during controlled tests;
-- adding fan tachometer feedback;
-- comparing the current controller against proportional or PID control;
-- measuring fan current and validating component ratings;
-- replacing the breadboard implementation with a PCB or permanent wiring harness.
-
-## Academic Context
-
-This repository documents the electrical-control subsystem of an academic multidisciplinary engineering project. It is presented to demonstrate my technical contribution, implementation process, and understanding of the system; it is not presented as an independently designed commercial 3D printer enclosure.
+- exporting and reviewing PDF copies of ACE-001, ACE-002, and ACE-003;
+- fabricating the control enclosure;
+- verifying Arduino, connector, and cable fit on physical parts;
+- checking sliding-lid operation and clearances after fabrication; and
+- iterating the CAD and drawings from measured build results.
