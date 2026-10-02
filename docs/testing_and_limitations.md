@@ -1,55 +1,225 @@
-# Testing, Evidence, and Limitations
+# Testing and Limitations
 
-## Retained Evidence
+## Prototype Status
 
-The original electrical-control project has the following retained evidence:
+The original group project's Arduino-based thermal-control prototype was constructed and operated. This statement refers to the electrical/control prototype for the main printer enclosure, not the later 2026 electronics control-box CAD.
 
-- a [video of the physical circuit operating](../media/enclosure_demo.MOV.MOV);
-- a [physical prototype photo](../media/enclosure_photo.HEIC);
-- the Arduino firmware;
-- a Tinkercad electrical schematic; and
-- a Tinkercad component list / BOM.
+Available retained evidence includes:
 
-The later independent mechanical extension adds native SolidWorks parts, an assembly, five CAD screenshots, and three native SolidWorks drawings. These mechanical artifacts are design documentation, not evidence of fabrication or physical fit validation.
+- A [hosted physical-prototype photograph](https://github.com/user-attachments/assets/a48dc317-c163-46c9-83ad-6458d7b99006)
+- A [hosted working-system demonstration](https://drive.google.com/file/d/1cJ_dpvMLTJp6Dsobzo3_qu-2Yc8-_ou2/view?usp=sharing)
+- Arduino firmware
+- A reconstructed Tinkercad circuit diagram
+- A component list
+- Project documentation
 
-## What Was Tested
+The retained project material supports the existence and operation of the prototype, but it does not contain a complete quantitative validation dataset.
 
-During the original project, the system was operated while monitoring sensor readings and temperature response to support troubleshooting and verify integrated fan-control behaviour. The retained working-circuit video provides qualitative evidence that the hardware and firmware operated together.
+The independent 2026 mechanical extension is supported by native SolidWorks parts, an assembly, five CAD screenshots, and three native SolidWorks drawings. These artifacts document a design, not physical fabrication or fit validation of the control enclosure.
 
-No quantitative calibration dataset, response-time dataset, or repeatability dataset has been retained, so this repository does **not** claim numerical temperature-control accuracy, fan-speed accuracy, or closed-loop performance.
+## Functional Testing
 
-## Important Documentation Note: LM35 vs TMP36
+During development, the system was checked for basic functional behavior.
 
-The physical build and retained firmware documentation identify an **LM35** analog temperature sensor. The Tinkercad environment used for the retained schematic did not provide an LM35 component, so a **TMP36 component was used only as a schematic stand-in**.
+The intended operating sequence was:
 
-The firmware uses the LM35 conversion relationship:
+1. Read temperature from the LM35 sensor
+2. Read the desired temperature from the potentiometer
+3. Display system information on the LCD
+4. Keep the fans off when cooling was not required
+5. Activate the fans when measured temperature exceeded the selected temperature
+6. Increase commanded fan PWM as temperature increased
+7. Observe measurements and controller outputs through the serial connection
 
-```cpp
-float temperatureC = tempVoltage * 100.0;
+The available project evidence supports functional prototype operation.
+
+However, detailed quantitative test records from the original development period were not retained.
+
+## Serial Diagnostics
+
+The firmware outputs:
+
+- Measured temperature
+- Selected temperature
+- Target PWM
+- Actual smoothed PWM command
+- Commanded fan percentage
+
+This provides a practical way to inspect controller behavior during testing and troubleshooting.
+
+Example:
+
+```text
+Temperature: 31.2 C | Setpoint: 29.5 C | Target PWM: 109 | Output PWM: 96 | Fan command: 38%
 ```
 
-A TMP36 requires a different conversion because it includes an output-voltage offset. The Tinkercad sensor symbol therefore should not be interpreted as the sensor model used in the physical prototype.
+## Temperature Measurement Limitations
 
-## Current Limitations
+The physical prototype used an LM35 sensor.
 
-- The controller estimates commanded PWM percentage, not actual fan RPM.
-- The system does not include tachometer feedback from the fans.
-- No retained reference-thermometer calibration data is available.
-- Temperature conversion assumes an approximately 5 V Arduino ADC reference.
-- The control strategy is threshold-based variable-speed control rather than PID or model-based control.
-- The electrical schematic is a retrospective Tinkercad representation and uses a TMP36 symbol in place of the documented LM35.
-- The mechanical control enclosure has not been documented as fabricated or physically fit-checked.
+The firmware uses the nominal LM35 relationship of approximately:
 
-## Possible Future Improvements
+```text
+10 mV / °C
+```
 
-These are proposed improvements, not completed features:
+No retained calibration dataset compares the LM35 measurements against a traceable reference thermometer.
 
-- calibrate the LM35 against a reference thermometer;
-- record temperature-versus-time data during controlled tests;
-- add fan tachometer feedback to measure actual RPM;
-- compare the current threshold-based controller with proportional or PID control;
-- log data automatically to a computer for analysis;
-- replace breadboard wiring with a purpose-built PCB or more permanent wiring harness;
-- document measured fan current and verify component ratings under worst-case operating conditions;
-- fabricate the control enclosure and verify board, connector, cable, and lid fit; and
-- revise the CAD/drawings based on measured physical results.
+Therefore the repository does not claim a measured temperature accuracy.
+
+ADC measurements also depend on the Arduino supply/reference voltage, which was treated as approximately 5 V.
+
+## Fan-Control Limitations
+
+The fans are controlled using PWM through a MOSFET.
+
+The system does not contain fan-speed feedback.
+
+Therefore:
+
+```text
+PWM percentage != measured fan RPM percentage
+```
+
+The displayed fan percentage represents only the electrical PWM command generated by the Arduino.
+
+No retained measurements exist for:
+
+- Fan RPM
+- Airflow
+- Fan start threshold
+- Fan stall threshold
+- Current consumption across PWM levels
+
+The minimum active PWM value used by the firmware should therefore be treated as a design choice rather than an experimentally validated specification.
+
+## Controller Limitations
+
+The controller is not PID control.
+
+It uses:
+
+- A user-selected temperature threshold
+- Proportional PWM mapping above that threshold
+- PWM output smoothing
+
+No formal controller tuning procedure was performed.
+
+No quantitative measurements were retained for:
+
+- Overshoot
+- Settling time
+- Steady-state temperature error
+- Disturbance rejection
+- Thermal time constant
+
+## Thermal-System Limitations
+
+No retained controlled experiment compares:
+
+- Enclosure temperature with fans disabled
+- Enclosure temperature with fans enabled
+- Different fan commands
+- Different external ambient conditions
+- Different printer operating loads
+
+Because of this, the project should not claim a specific reduction in enclosure temperature or cooling-performance percentage.
+
+## Hardware Limitations
+
+The prototype was built using breadboard-level electronics.
+
+It was not designed as production hardware.
+
+Limitations include:
+
+- No custom PCB
+- No formal electrical safety certification
+- No retained electromagnetic compatibility testing
+- No retained long-duration reliability testing
+- No fan tachometer feedback
+- No automatic fan-stall detection
+- No redundant temperature sensor
+- No formal sensor-failure handling
+- The 2026 CAD control enclosure is not documented as fabricated or physically fit-checked
+
+## Tinkercad Schematic Limitation
+
+The physical prototype used an LM35 temperature sensor.
+
+The original Tinkercad environment did not provide an LM35 component, so the diagram uses a TMP36 symbol as a visual substitute.
+
+This image documents the circuit architecture rather than providing an exact representation of the sensor component used in the physical build.
+
+The Arduino firmware uses the LM35 conversion relationship.
+
+## Firmware Improvements
+
+The repository version of the firmware was cleaned up after the original prototype project to improve readability and technical correctness.
+
+The cleaned version:
+
+- Uses floating-point mapping for temperature and averaged ADC values
+- Retains PWM smoothing using a floating-point accumulator
+- Prevents stale characters on the LCD
+- Separates sensing, control, display, and diagnostic logic into functions
+- Clearly distinguishes commanded PWM from measured fan speed
+
+These changes preserve the original system architecture and intended control behavior.
+
+## What Is Supported by the Project Evidence
+
+The project can reasonably demonstrate experience with:
+
+- Arduino firmware
+- Analog sensor acquisition
+- LM35 temperature sensing
+- Potentiometer input
+- PWM output
+- MOSFET-based load switching
+- DC fan control
+- I²C LCD communication
+- Basic signal averaging
+- Hardware/software integration
+- Electrical troubleshooting
+- Serial diagnostics
+- Technical documentation
+
+## Claims That Should Not Be Made
+
+Without additional testing, the project should not be described as having demonstrated:
+
+- A specific temperature-control accuracy
+- A specific cooling-performance improvement
+- Calibrated temperature measurement
+- Measured fan RPM control
+- PID control
+- Experimentally optimized PWM thresholds
+- Validated long-term reliability
+- Physical fabrication or fit validation of the 2026 control enclosure
+- Production tolerances, material specifications, surface finish, or production readiness for the CAD enclosure
+
+## Future Validation
+
+If the physical system were tested again, a useful validation experiment would record:
+
+```text
+time
+measured temperature
+temperature setpoint
+target PWM
+output PWM
+ambient temperature
+```
+
+A temperature-versus-time plot could then be used to evaluate:
+
+- Response time
+- Cooling behavior
+- Steady-state behavior
+- Effect of different setpoints
+- Effect of different fan commands
+
+Fan tachometer feedback could also be added in a future design to compare commanded PWM with actual rotational speed.
+
+For the mechanical extension, future validation should include enclosure fabrication, controller and connector fit checks, cable-routing checks, sliding-lid operation, and drawing/CAD revisions based on measured results.

@@ -1,6 +1,6 @@
 # Arduino-Controlled 3D Printer Enclosure
 
-This portfolio project combines an Arduino-based temperature-control prototype with a later SolidWorks electronics-packaging extension. It documents analog temperature sensing, PWM fan actuation, electrical integration, parametric enclosure design, assembly modelling, and engineering drawings while keeping the original group work separate from the independent CAD work.
+This portfolio project combines an Arduino-based temperature-control prototype with a later SolidWorks electronics-packaging extension. It documents analog temperature sensing, PWM fan actuation, prototype testing, electrical integration, parametric enclosure design, assembly modelling, and engineering drawings while keeping the original group work separate from the independent CAD work.
 
 ![Closed SolidWorks assembly of the Arduino control enclosure](docs/images/enclosure_closed.png)
 
@@ -116,10 +116,10 @@ Exact source and output filenames are listed in [`docs/drawings/README.md`](docs
 The retained Arduino firmware implements a threshold-based variable-speed controller:
 
 - The LM35 signal on A0 and setpoint potentiometer on A1 are each averaged over 20 ADC samples.
-- The potentiometer maps to a 25-40 deg C threshold.
+- The potentiometer maps to a 25-40 °C threshold using floating-point range mapping.
 - At or below the threshold, target fan PWM is zero.
-- Above the threshold, the target command increases over the next 10 deg C and is constrained to 80-255.
-- A 0.1 update factor moves the integer PWM command gradually toward its target.
+- Above the threshold, the target command increases over the next 10 °C and is constrained to 80-255.
+- A floating-point accumulator applies a 0.1 smoothing factor before the command is rounded for `analogWrite()`.
 - PWM pin D3 drives the fan load through an n-channel MOSFET.
 - A 16 x 2 I2C LCD and 9600-baud serial output report temperature, setpoint, and commanded fan percentage.
 
@@ -131,7 +131,7 @@ This is not PID control and it does not measure fan RPM. See the [firmware](firm
 
 ## Testing and Retained Evidence
 
-The original electrical prototype was operated while readings and system behaviour were monitored for integration, testing, and troubleshooting. Retained evidence includes the source code, Tinkercad schematic, component documentation, a [prototype photo](media/enclosure_photo.HEIC), and a [working-system video](media/enclosure_demo.MOV.MOV).
+The original electrical prototype was operated while readings and system behaviour were monitored for integration, testing, and troubleshooting. Retained evidence includes the source code, Tinkercad schematic, component documentation, a [hosted prototype photo](https://github.com/user-attachments/assets/a48dc317-c163-46c9-83ad-6458d7b99006), and a [working-system demonstration](https://drive.google.com/file/d/1cJ_dpvMLTJp6Dsobzo3_qu-2Yc8-_ou2/view?usp=sharing).
 
 This evidence is qualitative. The repository does not contain a retained calibration dataset, fan-RPM measurements, a controlled thermal-response dataset, or repeatability results; no numerical accuracy or closed-loop performance is claimed.
 
@@ -171,8 +171,7 @@ arduino-3d-printer-enclosure/
 |   `-- images/
 |       `-- five SolidWorks design views
 `-- media/
-    |-- enclosure_photo.HEIC
-    `-- enclosure_demo.MOV.MOV
+    `-- README.md
 ```
 
 Native CAD files remain in their original directory and retain their existing filenames to avoid disrupting assembly or drawing references.
