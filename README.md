@@ -101,15 +101,15 @@ See [Mechanical Design Notes](docs/mechanical-design.md) for the CAD structure, 
 
 ## Engineering Drawings
 
-The native SolidWorks drawings are retained with the part and assembly files. PDF export remains a manual step in this repository.
+The native SolidWorks drawings are retained with the part and assembly files, with one-sheet PDF exports provided for browser-based review.
 
-| Drawing | Description | PDF status |
+| Drawing | Description | PDF |
 | --- | --- | --- |
-| ACE-001 | Arduino Control Enclosure Base | Manual export required |
-| ACE-002 | Arduino Control Enclosure Sliding Lid | Manual export required |
-| ACE-003 | Arduino Control Enclosure Assembly | Manual export required |
+| ACE-001 | Arduino Control Enclosure Base | [View Drawing](docs/drawings/ACE-001_Arduino_Control_Enclosure_Base.pdf) |
+| ACE-002 | Arduino Control Enclosure Sliding Lid | [View Drawing](docs/drawings/ACE-002_Arduino_Control_Enclosure_Sliding_Lid.pdf) |
+| ACE-003 | Arduino Control Enclosure Assembly | [View Drawing](docs/drawings/ACE-003_Arduino_Control_Enclosure_Assembly.pdf) |
 
-Exact source and output filenames are listed in [`docs/drawings/README.md`](docs/drawings/README.md). No claim is made for GD&T, production tolerances, material specifications, surface finish, or production readiness.
+ACE-001 includes dimensioned base views and section A-A; ACE-002 includes dimensioned lid and isometric views; ACE-003 includes closed, open, and exploded assembly views with a three-item BOM and item balloons. Exact source and output filenames are listed in [`docs/drawings/README.md`](docs/drawings/README.md). No claim is made for GD&T, production tolerances, material specifications, surface finish, or production readiness.
 
 ## Electrical & Control System
 
@@ -178,11 +178,10 @@ Native CAD files remain in their original directory and retain their existing fi
 
 ## Design Status / Future Work
 
-The repository contains the original controller firmware and qualitative prototype evidence, plus native CAD parts, an assembly, screenshots, and three native drawings for the independent mechanical extension. The control enclosure has not been documented here as physically fabricated or fit-validated.
+The repository contains the original controller firmware and qualitative prototype evidence, plus native CAD parts, an assembly, screenshots, three native drawings, and verified PDF exports for the independent mechanical extension. The control enclosure has not been documented here as physically fabricated or fit-validated.
 
 Remaining engineering work includes:
 
-- exporting and reviewing PDF copies of ACE-001, ACE-002, and ACE-003;
 - fabricating the control enclosure;
 - verifying Arduino, connector, and cable fit on physical parts;
 - checking sliding-lid operation and clearances after fabrication; and
